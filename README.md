@@ -48,16 +48,16 @@ With RxJava and some transformations nothing more easily.
 Have a look:
 
 ```Kotlin
-	val routeRest = RouteRest()
-        routeRest.getJsonDirections(
-            source, destination, //starting and ending point
-            TravelMode.DRIVING, //Travel mode
-            "Your api key" //google maps API from GCP, make sure google directions are enabled
-        )
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.map { s -> RouteJsonParser<Routes>().parse(s, Routes::class.java) }
-            ?.subscribe { r -> routeDrawer.drawPath(r) }
-			
+val routeRest = RouteRest()
+	routeRest.getJsonDirections(
+		source, destination, //starting and ending point
+		TravelMode.DRIVING, //Travel mode
+		"Your api key" //google maps API from GCP, make sure google directions are enabled
+	)
+		?.observeOn(AndroidSchedulers.mainThread())
+		?.map { s -> RouteJsonParser<Routes>().parse(s, Routes::class.java) }
+		?.subscribe { r -> routeDrawer.drawPath(r) }
+		
 ```
 
 The most important part here is
@@ -75,7 +75,7 @@ In short, we parse our response to Routes object, so now we can go to draw the p
 
 Here we have to use DrawerApi which for now provides one method:
 ```Kotlin
-	fun drawPath(Routes routes);
+fun drawPath(Routes routes);
 ```
 (for now it forces to use Routes object).
 
