@@ -20,22 +20,22 @@ First we have to download the path. For this we need to provide two points (star
 
 
 ```Kotlin
-	interface RouteApi {
-		fun getJsonDirections(
-			start: LatLng,
-			end: LatLng,
-			mode: TravelMode,
-			apiKey: String
-		): Observable<String?>?
-	}
+interface RouteApi {
+	fun getJsonDirections(
+		start: LatLng,
+		end: LatLng,
+		mode: TravelMode,
+		apiKey: String
+	): Observable<String?>?
+}
 ```
 
 Where travel mode can be:
 
 ```Kotlin
-	enum class TravelMode {
-		DRIVING, WALKING, BICYCLING, TRANSIT
-	}
+enum class TravelMode {
+	DRIVING, WALKING, BICYCLING, TRANSIT
+}
 ```
 
 As you can see the above method returns Observable and our response is a String.
@@ -61,9 +61,8 @@ Have a look:
 The most important part here is
 
 ```Kotlin
-...
-		?.map { s -> RouteJsonParser<Routes>().parse(s, Routes::class.java) }
-		```
+ .map { s -> RouteJsonParser<Routes>().parse(s, Routes::class.java) }
+```
 
 For more details about 'map' operator can be find here - https://github.com/ReactiveX/RxJava/wiki/Transforming-Observables#map
 In short, we parse our response to Routes object, so now we can go to draw the path on the map.
@@ -71,7 +70,7 @@ In short, we parse our response to Routes object, so now we can go to draw the p
 
 Here we have to use DrawerApi which for now provides one method:
 ```Kotlin
-fun drawPath(Routes routes);
+	fun drawPath(Routes routes);
 ```
 (for now it forces to use Routes object).
 
