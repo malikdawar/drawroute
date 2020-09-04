@@ -1,0 +1,2 @@
+rootProject.name='Sample'
+include ':app', ':drawroute'
