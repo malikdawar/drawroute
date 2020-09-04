@@ -167,7 +167,7 @@ class YourFragment : Fragment(), OnMapReadyCallback {
         routeRest.getJsonDirections(
             source, destination, //starting and ending point
             TravelMode.DRIVING, //Travel mode
-            "Your api key" //google maps API from GCP, make sure google directions are enabled
+            getString(R.string.google_map_api_key) //google maps API from GCP, make sure google directions are enabled
         )
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.map { s -> RouteJsonParser<Routes>().parse(s, Routes::class.java) }
