@@ -1,7 +1,7 @@
 DrawRoute
 ===========
 
-RouteDrawer wraps Google Directions API (https://developers.google.com/maps/documentation/directions/) using RxJava for Android so developers can download, parse and draw path on the map in very fast and flexible way (For now only JSON support).
+DrawRoute wraps Google Directions API (https://developers.google.com/maps/documentation/directions/) using RxJava for Android so developers can download, parse and draw path on the map in very fast and flexible way (For now only JSON support).
 
 [![License](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0) 
 The library contains two main parts.
