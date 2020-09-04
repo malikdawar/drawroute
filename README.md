@@ -13,6 +13,26 @@ The library contains two main parts.
     is responsible for drawing the path on the map
 
 
+GRADLE
+===========
+If you are using gradle:
+Step1: Add it in your root build.gradle at the end of repositories
+```xml
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
+Step2: Add the dependency
+```xml
+dependencies {
+      ...
+	  implementation 'com.github.malikdawar:drawroute:1.0'
+}
+```
+Otherwise you have to use library directly in your project.
 
 USAGE
 ===========
@@ -156,6 +176,9 @@ class YourFragment : Fragment(), OnMapReadyCallback {
     }
 }
 ```
+
+Screen Shot
+![image](screenshot/map.jpeg)
 
 Developed By
 ------------
