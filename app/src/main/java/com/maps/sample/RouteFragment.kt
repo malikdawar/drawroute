@@ -53,7 +53,12 @@ class RouteFragment : Fragment(), OnMapReadyCallback {
 
         googleMap?.run {
             //Called the drawRouteOnMap method to draw the polyline/route on google maps
-            drawRouteOnMap(this, "Your_API_Key", source = source, destination = destination)
+            drawRouteOnMap(
+                this,
+                getString(R.string.google_map_api_key),
+                source = source,
+                destination = destination
+            )
 
             mapUtils.let {
                 //Dropped the marker on source
@@ -99,6 +104,10 @@ class RouteFragment : Fragment(), OnMapReadyCallback {
         )
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.map { s -> RouteJsonParser<Routes>().parse(s, Routes::class.java) }
-            ?.subscribe { r -> routeDrawer.drawPath(r) }
+            ?.subscribe { r ->
+                routeDrawer.drawPath(r)
+                mapUtils.boundMarkersOnMap(googleMap, arrayListOf(source, destination))
+            }
+
     }
 }
