@@ -28,6 +28,7 @@ interface RouteApi {
 		apiKey: String
 	): Observable<String?>?
 }
+
 ```
 
 Where travel mode can be:
@@ -36,6 +37,7 @@ Where travel mode can be:
 enum class TravelMode {
 	DRIVING, WALKING, BICYCLING, TRANSIT
 }
+
 ```
 
 As you can see the above method returns Observable and our response is a String.
@@ -61,7 +63,10 @@ Have a look:
 The most important part here is
 
 ```Kotlin
- .map { s -> RouteJsonParser<Routes>().parse(s, Routes::class.java) }
+ .map { 
+	s -> RouteJsonParser<Routes>().parse(s, Routes::class.java) 
+ }
+ 
 ```
 
 For more details about 'map' operator can be find here - https://github.com/ReactiveX/RxJava/wiki/Transforming-Observables#map
@@ -99,7 +104,7 @@ And taking all together:
 
 ```Kotlin
 
-    class YourFragment : Fragment(), OnMapReadyCallback {
+class YourFragment : Fragment(), OnMapReadyCallback {
 
     private var googleMap: GoogleMap? = null
 
