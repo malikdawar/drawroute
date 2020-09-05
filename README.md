@@ -1,19 +1,21 @@
 DrawRoute
+
+[![License](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0) 
+![GitHub pull requests](https://img.shields.io/github/issues-pr/malikdawar/drawroute)
+
 ===========
 
 DrawRoute wraps Google Directions API (https://developers.google.com/maps/documentation/directions/) using RxJava for Android so developers can download, parse and draw path on the map in very fast and flexible way (For now only JSON support).
 
-[![License](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0) 
+
 The library contains two main parts.
-
- - RouteApi
-    is responsible for sending request to Google's Direction API and handling the response
-
- - DrawerApi
+ - **RouteAPI**
+    is responsible for sending request to **Google's Direction API** and handling the response
+ - **DrawerAPI**
     is responsible for drawing the path on the map
 
 
-GRADLE
+How to add (gradle)
 ===========
 If you are using gradle:
 Step1: Add it in your root build.gradle at the end of repositories
