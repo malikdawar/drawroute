@@ -184,7 +184,7 @@ Screen Shot
 
 Developed By
 ------------
-Malik Dawar - malidawar332@gmail.com
+Malik Dawar - malikdawar332@gmail.com
 
 License
 ----------
