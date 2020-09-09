@@ -1,6 +1,7 @@
 DrawRoute
 
 [![License](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0) 
+[![Android Arsenal]( https://img.shields.io/badge/Android%20Arsenal-drawroute-green.svg?style=flat )]( https://android-arsenal.com/details/1/8158 )
 ![GitHub pull requests](https://img.shields.io/github/issues-pr/malikdawar/drawroute)
 
 ===========
