@@ -8,24 +8,11 @@ import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
-import com.maps.route.RouteDrawer
-import com.maps.route.RouteRest
-import com.maps.route.model.Routes
-import com.maps.route.model.TravelMode
-import com.maps.route.parser.RouteJsonParser
-import com.maps.sample.extensions.getColorCompat
-import com.maps.sample.utils.MapUtils
-import org.koin.java.KoinJavaComponent
-import rx.android.schedulers.AndroidSchedulers
+import com.maps.route.extensions.drawRouteOnMap
+import com.maps.route.extensions.moveCameraOnMap
 
 class RouteFragment : Fragment(), OnMapReadyCallback {
-
-    // MapUtils helper class from Koin, DI frame work
-    private val mapUtils: MapUtils by KoinJavaComponent.inject(
-        MapUtils::class.java
-    )
 
     private var googleMap: GoogleMap? = null
 
@@ -52,62 +39,15 @@ class RouteFragment : Fragment(), OnMapReadyCallback {
         val destination = LatLng(31.474316, 74.316112) // ending point (LatLng)
 
         googleMap?.run {
-            //Called the drawRouteOnMap method to draw the polyline/route on google maps
+            moveCameraOnMap(latLng = source)
+
+            //Called the drawRouteOnMap extension to draw the polyline/route on google maps
             drawRouteOnMap(
-                this,
                 getString(R.string.google_map_api_key),
                 source = source,
-                destination = destination
+                destination = destination,
+                context = context!!
             )
-
-            mapUtils.let {
-                //Dropped the marker on source
-                it.drawMarker(
-                    this,
-                    source,
-                    R.drawable.ic_location,
-                    null
-                )
-                //Dropped the marker on destination
-                it.drawMarker(
-                    this,
-                    destination,
-                    R.drawable.ic_location,
-                    null
-                )
-            }
         }
-    }
-
-    //Method to create the path on maps
-    private fun drawRouteOnMap(
-        googleMap: GoogleMap,
-        mapsApiKey: String,
-        source: LatLng,
-        destination: LatLng,
-        color: Int = context!!.getColorCompat(R.color.colorPrimary)
-    ) {
-        //creation of polyline with attributes
-        val routeDrawer = RouteDrawer.RouteDrawerBuilder(googleMap)
-            .withColor(color)
-            .withWidth(13)
-            .withAlpha(0.6f)
-            .withMarkerIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
-            .build()
-
-        //API call to get the path points from google
-        val routeRest = RouteRest()
-        routeRest.getJsonDirections(
-            source, destination, //starting and ending point
-            TravelMode.DRIVING, //Travel mode
-            mapsApiKey //google maps API from GCP, make sure google directions are enabled
-        )
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.map { s -> RouteJsonParser<Routes>().parse(s, Routes::class.java) }
-            ?.subscribe { r ->
-                routeDrawer.drawPath(r)
-                mapUtils.boundMarkersOnMap(googleMap, arrayListOf(source, destination))
-            }
-
     }
 }
