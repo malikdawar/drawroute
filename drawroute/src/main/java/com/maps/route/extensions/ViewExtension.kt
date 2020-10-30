@@ -1,4 +1,4 @@
-package com.maps.sample.extensions
+package com.maps.route.extensions
 
 import android.content.Context
 import androidx.annotation.ColorRes
@@ -17,4 +17,4 @@ fun Context.getColorCompat(@ColorRes colorRes: Int) = ContextCompat.getColor(thi
  * @return void
  * @author Dawar Malik.
  */
-fun Fragment.getColor(@ColorRes colorRes: Int) = ContextCompat.getColor(requireContext(), colorRes)
+fun Fragment.getColor(@ColorRes colorRes: Int) = requireContext().getColorCompat(colorRes)

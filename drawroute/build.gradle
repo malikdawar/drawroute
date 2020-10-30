@@ -6,12 +6,12 @@ apply plugin: 'com.github.dcendents.android-maven'
 group='com.github.malikdawar'
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.3"
+    compileSdkVersion 30
+    buildToolsVersion "30.0.2"
 
     defaultConfig {
         minSdkVersion 23
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
 
@@ -40,10 +40,10 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'com.netflix.rxjava:rxjava-android:0.20.6'
-    implementation 'com.netflix.rxjava:rxjava-async-util:0.20.6'
+    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
+   // implementation 'io.reactivex.rxjava3:rxjava:3.0.0'
     //Google play services
-    implementation 'com.google.android.gms:play-services-location:17.0.0'
+    implementation 'com.google.android.gms:play-services-location:17.1.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     //OkHttp
     implementation 'com.squareup.okhttp:okhttp:2.0.0'
