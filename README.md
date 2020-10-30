@@ -150,7 +150,7 @@ private final OnMapReadyCallback callback = googleMap -> {
         MapExtensionKt.moveCameraOnMap(googleMap, 16, true, source);
 
         //draw route on map
-       disposable = MapExtensionKt.drawRouteOnMap(googleMap,
+       MapExtensionKt.drawRouteOnMap(googleMap,
                 getString(R.string.google_map_api_key),
                 getContext(),
                 source,
