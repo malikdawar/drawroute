@@ -11,10 +11,12 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.maps.route.extensions.drawRouteOnMap
 import com.maps.route.extensions.moveCameraOnMap
+import io.reactivex.rxjava3.disposables.Disposable
 
 class RouteFragment : Fragment(), OnMapReadyCallback {
 
     private var googleMap: GoogleMap? = null
+    private var disposable:Disposable?=null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,12 +44,18 @@ class RouteFragment : Fragment(), OnMapReadyCallback {
             moveCameraOnMap(latLng = source)
 
             //Called the drawRouteOnMap extension to draw the polyline/route on google maps
-            drawRouteOnMap(
+           disposable =  drawRouteOnMap(
                 getString(R.string.google_map_api_key),
                 source = source,
                 destination = destination,
                 context = context!!
             )
         }
+    }
+
+    override fun onDestroy() {
+        disposable?.dispose()
+        super.onDestroy()
+
     }
 }

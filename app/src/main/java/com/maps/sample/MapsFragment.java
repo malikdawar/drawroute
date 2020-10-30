@@ -16,7 +16,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.maps.route.extensions.MapExtensionKt;
 import com.maps.route.model.TravelMode;
 
+import io.reactivex.rxjava3.disposables.Disposable;
+
 public class MapsFragment extends Fragment {
+
+    private Disposable disposable;
 
     private final OnMapReadyCallback callback = googleMap -> {
 
@@ -27,7 +31,7 @@ public class MapsFragment extends Fragment {
         MapExtensionKt.moveCameraOnMap(googleMap, 16, true, source);
 
         //draw route on map
-        MapExtensionKt.drawRouteOnMap(googleMap,
+       disposable = MapExtensionKt.drawRouteOnMap(googleMap,
                 getString(R.string.google_map_api_key),
                 getContext(),
                 source,
@@ -51,5 +55,13 @@ public class MapsFragment extends Fragment {
         if (mapFragment != null) {
             mapFragment.getMapAsync(callback);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        if(disposable!=null)
+            disposable.dispose();
+        super.onDestroy();
+
     }
 }

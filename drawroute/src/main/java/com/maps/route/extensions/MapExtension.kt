@@ -13,6 +13,8 @@ import com.maps.route.model.TravelMode
 import com.maps.route.parser.RouteJsonParser
 import com.maps.route.utils.MapUtils
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.annotations.NonNull
+import io.reactivex.rxjava3.disposables.Disposable
 
 
 /**
@@ -90,7 +92,7 @@ fun GoogleMap.drawRouteOnMap(
     boundMarkers: Boolean = true,
     polygonWidth: Int = 13,
     travelMode: TravelMode = TravelMode.DRIVING
-) {
+): @NonNull Disposable? {
 
     // if user need the source and destination markers
     if (markers){
@@ -111,7 +113,7 @@ fun GoogleMap.drawRouteOnMap(
 
     //API call to get the path points from google
     val routeRest = RouteRest()
-    routeRest.getJsonDirections(
+  return routeRest.getJsonDirections(
         source, destination, //starting and ending point
         travelMode, //Travel mode
         mapsApiKey //google maps API from GCP, make sure google directions are enabled
