@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.maps.GoogleMap;
+
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -18,26 +18,22 @@ import com.maps.route.model.TravelMode;
 
 public class MapsFragment extends Fragment {
 
-    private OnMapReadyCallback callback = new OnMapReadyCallback() {
+    private final OnMapReadyCallback callback = googleMap -> {
 
-        @Override
-        public void onMapReady(GoogleMap googleMap) {
+        LatLng source = new LatLng(31.490127, 74.316971); //starting point (LatLng)
+        LatLng destination = new LatLng(31.474316, 74.316112); // ending point (LatLng)
 
-            LatLng source = new LatLng(31.490127, 74.316971); //starting point (LatLng)
-            LatLng destination = new LatLng(31.474316, 74.316112); // ending point (LatLng)
+        //zoom/move cam on map ready
+        MapExtensionKt.moveCameraOnMap(googleMap, 16, true, source);
 
-            //zoom/move cam on map ready
-            MapExtensionKt.moveCameraOnMap(googleMap, 16, true, source);
-
-            //draw route on map
-            MapExtensionKt.drawRouteOnMap(googleMap,
-                    getString(R.string.google_map_api_key),
-                    getContext(),
-                    source,
-                    destination,
-                    getActivity().getColor(R.color.pathColor),
-                    true, true, 13, TravelMode.DRIVING);
-        }
+        //draw route on map
+        MapExtensionKt.drawRouteOnMap(googleMap,
+                getString(R.string.google_map_api_key),
+                getContext(),
+                source,
+                destination,
+                getActivity().getColor(R.color.pathColor),
+                true, true, 13, TravelMode.DRIVING);
     };
 
     @Nullable

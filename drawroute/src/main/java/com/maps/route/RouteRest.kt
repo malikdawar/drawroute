@@ -21,32 +21,32 @@ import com.google.android.gms.maps.model.LatLng
 import com.maps.route.model.TravelMode
 import com.squareup.okhttp.OkHttpClient
 import com.squareup.okhttp.Request
-import rx.Observable
-import rx.functions.Func0
-import rx.schedulers.Schedulers
-import rx.util.async.Async
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.schedulers.Schedulers
+
 import java.io.IOException
 import java.util.*
 
+
 class RouteRest : RouteApi {
-    private var client: OkHttpClient = OkHttpClient()
+
+    private val okHttpClient = OkHttpClient()
 
     override fun getJsonDirections(
         start: LatLng,
         end: LatLng,
         mode: TravelMode,
         apiKey: String
-    ): Observable<String?>? {
-        val resultFunc = Func0 label@{
-            try {
-                return@label getJSONDirection(start, end, mode, apiKey)
+    ): Single<String?>? {
+        return try {
+               Single.fromCallable{getJSONDirection(start, end, mode, apiKey)}.subscribeOn(Schedulers.io())
             } catch (e: IOException) {
                 e.printStackTrace()
-            }
             null
+            }
+
         }
-        return Async.start(resultFunc, Schedulers.io())
-    }
+
 
     @Throws(IOException::class)
     private fun getJSONDirection(
@@ -63,13 +63,13 @@ class RouteRest : RouteApi {
                 + end.latitude + ","
                 + end.longitude
                 + "&sensor=false&units=metric&mode="
-                + mode.name.toLowerCase(Locale.US)
+                + mode.name.toLowerCase(Locale.getDefault())
                 + "&key="
                 + apiKey)
         val request = Request.Builder()
             .url(url)
             .build()
-        val response = client.newCall(request).execute()
+        val response = okHttpClient.newCall(request).execute()
         return response.body().string()
     }
 }

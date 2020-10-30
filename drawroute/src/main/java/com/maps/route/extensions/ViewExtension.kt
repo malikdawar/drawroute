@@ -17,4 +17,4 @@ fun Context.getColorCompat(@ColorRes colorRes: Int) = ContextCompat.getColor(thi
  * @return void
  * @author Dawar Malik.
  */
-fun Fragment.getColor(@ColorRes colorRes: Int) = ContextCompat.getColor(requireContext(), colorRes)
+fun Fragment.getColor(@ColorRes colorRes: Int) = requireContext().getColorCompat(colorRes)

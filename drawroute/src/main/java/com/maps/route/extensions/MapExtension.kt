@@ -12,12 +12,11 @@ import com.maps.route.model.Routes
 import com.maps.route.model.TravelMode
 import com.maps.route.parser.RouteJsonParser
 import com.maps.route.utils.MapUtils
-import rx.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+
 
 /**
- * Extension function to draw a marker
- * @return void
- * @param googleMap Google maps instance
+ * Extension function to draw a marker.
  * @param location latLng where the marker is required
  * @param resDrawable The image/drawable of marker
  * @param title optional title of marker
@@ -40,9 +39,7 @@ fun GoogleMap.drawMarker(
 }
 
 /**
- * Extension function to zoom on map
- * @return void
- * @param googleMap Google maps instance
+ * Extension function to zoom on map.
  * @param zoom zoom level, by default its 15.5f
  * @param animate if animation is required, by default it's true
  * @param latLng latLng where the zoom is required
@@ -71,9 +68,7 @@ fun GoogleMap.moveCameraOnMap(
 
 
 /**
- * Extension function to draw path/route on map
- * @return void
- * @param googleMap Google maps as extension
+ * Extension function to draw path/route on map.
  * @param mapsApiKey google maps API from GCP, make sure google directions are enabled
  * @param context Context
  * @param source source point from where the path is required
@@ -99,9 +94,9 @@ fun GoogleMap.drawRouteOnMap(
 
     // if user need the source and destination markers
     if (markers){
-        context.let {
-            drawMarker(location = source, context = it)
-            drawMarker(location = destination, context = it)
+        context.run {
+            drawMarker(location = source, this)
+            drawMarker(location = destination, this)
         }
     }
 
@@ -120,8 +115,7 @@ fun GoogleMap.drawRouteOnMap(
         source, destination, //starting and ending point
         travelMode, //Travel mode
         mapsApiKey //google maps API from GCP, make sure google directions are enabled
-    )
-        ?.observeOn(AndroidSchedulers.mainThread())
+    )?.observeOn(AndroidSchedulers.mainThread())
         ?.map { s -> RouteJsonParser<Routes>().parse(s, Routes::class.java) }
         ?.subscribe { r ->
             routeDrawer.drawPath(r)
@@ -132,11 +126,9 @@ fun GoogleMap.drawRouteOnMap(
 }
 
 /**
- * Extension function to bound all the markers on map
- * @return void
- * @param googleMap Google maps instance
+ * Extension function to bound all the markers on map.
  * @param padding by default it's 425
- * @param latLng array of all the latlng taht are require to bound
+ * @param latLng array of all the latlng that are required to bound.
  * @author Dawar Malik.
  */
 fun GoogleMap.boundMarkersOnMap(

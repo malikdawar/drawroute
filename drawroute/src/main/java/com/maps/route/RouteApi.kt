@@ -19,13 +19,15 @@ package com.maps.route
 
 import com.google.android.gms.maps.model.LatLng
 import com.maps.route.model.TravelMode
-import rx.Observable
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
+
 
 interface RouteApi {
     fun getJsonDirections(
         start: LatLng,
         end: LatLng,
         mode: TravelMode,
-        apiKey: String
-    ): Observable<String?>?
+        apiKey: String,
+    ): Single<String?>?
 }
