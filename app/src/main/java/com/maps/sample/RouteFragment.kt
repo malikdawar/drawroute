@@ -56,6 +56,5 @@ class RouteFragment : Fragment(), OnMapReadyCallback {
     override fun onDestroy() {
         disposable?.dispose()
         super.onDestroy()
-
     }
 }

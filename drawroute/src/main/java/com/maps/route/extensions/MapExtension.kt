@@ -97,8 +97,8 @@ fun GoogleMap.drawRouteOnMap(
     // if user need the source and destination markers
     if (markers){
         context.run {
-            drawMarker(location = source, this)
-            drawMarker(location = destination, this)
+            drawMarker(location = source, context = this)
+            drawMarker(location = destination, context = this)
         }
     }
 
