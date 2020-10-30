@@ -6,7 +6,8 @@ DrawRoute
 
 ===========
 
-DrawRoute wraps Google Directions API (https://developers.google.com/maps/documentation/directions/) using RxJava for Android so developers can download, parse and draw path on the map in very fast and flexible way (For now only JSON support).
+DrawRoute wraps Google Directions API (https://developers.google.com/maps/documentation/directions/) using RxJava for Android so developers can download, parse and draw path on the map in very fast and flexible way. 
+Note: You need to generate an API key at Google cloud platform also don't forget to enable Directions API. Enjoy!
 
 
 The library contains two main parts.
@@ -20,19 +21,19 @@ How to add (gradle)
 ===========
 If you are using gradle:
 Step1: Add it in your root build.gradle at the end of repositories
+
 ```xml
 allprojects {
     repositories {
-        ...
         maven { url 'https://jitpack.io' }
     }
 }
 ```
+
 Step2: Add the dependency
 ```xml
 dependencies {
-      ...
-	  implementation 'com.github.malikdawar:drawroute:1.0'
+	implementation 'com.github.malikdawar:drawroute:1.1-rx'
 }
 ```
 Otherwise you have to use library directly in your project.
@@ -43,93 +44,54 @@ First we have to download the path. For this we need to provide two points (star
 
 
 ```Kotlin
-interface RouteApi {
-	fun getJsonDirections(
-		start: LatLng,
-		end: LatLng,
-		mode: TravelMode,
-		apiKey: String
-	): Observable<String?>?
-}
+	val source = LatLng(31.490127, 74.316971) //starting point (LatLng)
+        val destination = LatLng(31.474316, 74.316112) // ending point (LatLng)
+
+        googleMap?.run {
+            moveCameraOnMap(latLng = source) // if you want to zoom the map to any point
+
+            //Called the drawRouteOnMap extension to draw the polyline/route on google maps
+           drawRouteOnMap(
+                getString(R.string.google_map_api_key), //your API key
+                source = source, // Source from where you want to draw path
+                destination = destination, // destination to where you want to draw path
+                context = context!! //Activity context
+            )
+        }
 
 ```
 
-Where travel mode can be:
+If you want more control
+
+```Kotlin
+	fun GoogleMap.drawRouteOnMap(
+	    mapsApiKey: String,  // YOur API key
+	    context: Context, //App context
+	    source: LatLng, //Source, from where you want to draw path
+	    destination: LatLng,  //Destination, to where you want to draw path
+	    color: Int = context.getColorCompat(R.color.pathColor),  //color, path/route/polygon color, specify the color if you want some other color other then default one
+	    markers: Boolean = true, //If you want markers on source and destination, by default it is true
+	    boundMarkers: Boolean = true, //If you want to bound the markers(start and end points) in screen with padding, by default it is true 
+	    polygonWidth: Int = 13, // route/path width, by default it is 13
+	    travelMode: TravelMode = TravelMode.DRIVING //Travel mode, by default it is DRIVING
+	)
+
+```
 
 ```Kotlin
 enum class TravelMode {
-	DRIVING, WALKING, BICYCLING, TRANSIT
+    DRIVING, WALKING, BICYCLING, TRANSIT
 }
 
 ```
-
-As you can see the above method returns Observable and our response is a String.
-So far so good, we downloaded the route but what the hell - response as String, I don't want to parse it on my own.
-
-With RxJava and some transformations nothing more easily.
-
-Have a look:
-
-```Kotlin
-val routeRest = RouteRest()
-	routeRest.getJsonDirections(
-		source, destination, //starting and ending point
-		TravelMode.DRIVING, //Travel mode
-		"Your api key" //google maps API from GCP, make sure google directions are enabled
-	)
-		?.observeOn(AndroidSchedulers.mainThread())
-		?.map { s -> RouteJsonParser<Routes>().parse(s, Routes::class.java) }
-		?.subscribe { r -> routeDrawer.drawPath(r) }
-		
-```
-
-The most important part here is
-
-```Kotlin
- .map { 
-	s -> RouteJsonParser<Routes>().parse(s, Routes::class.java) 
- }
- 
-```
-
-For more details about 'map' operator can be find here - https://github.com/ReactiveX/RxJava/wiki/Transforming-Observables#map
-In short, we parse our response to Routes object, so now we can go to draw the path on the map.
-
-
-Here we have to use DrawerApi which for now provides one method:
-```Kotlin
-fun drawPath(Routes routes);
-```
-(for now it forces to use Routes object).
-
-We are almost there but before we invoke draw method we have to build our drawer using RouteDrawerBuilder.
-It allows us to customize a little bit the path and the markers. It requires to get GoogleMap(!) and if we want we can provide
-```
-- marker icon
-- path width
-- path color
-- marker alpha
-```
-
-This can look as
-
-```Kotlin
-    val routeDrawer = RouteDrawer.RouteDrawerBuilder(googleMap)
-            .withColor(context!!.getColorCompat(R.color.colorPrimary))
-            .withWidth(13)
-            .withAlpha(0.6f)
-            .withMarkerIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
-            .build()
-```
-
 
 And taking all together:
 
 ```Kotlin
-
-class YourFragment : Fragment(), OnMapReadyCallback {
+class RouteFragment : Fragment(), OnMapReadyCallback {
 
     private var googleMap: GoogleMap? = null
+    private var disposable: Disposable?=null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -152,32 +114,26 @@ class YourFragment : Fragment(), OnMapReadyCallback {
 
         val source = LatLng(31.490127, 74.316971) //starting point (LatLng)
         val destination = LatLng(31.474316, 74.316112) // ending point (LatLng)
-	
-		//check if map has been initialized
-        googleMap?.run {
-            //Called the drawRouteOnMap method to draw the polyline/route on google maps
-			
-            //creation of polyline with attributes
-        val routeDrawer = RouteDrawer.RouteDrawerBuilder(this)
-            .withColor(context!!.getColorCompat(R.color.colorPrimary))
-            .withWidth(13)
-            .withAlpha(0.6f)
-            .withMarkerIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
-            .build()
 
-        //API call to get the path points from google
-        val routeRest = RouteRest()
-        routeRest.getJsonDirections(
-            source, destination, //starting and ending point
-            TravelMode.DRIVING, //Travel mode
-            getString(R.string.google_map_api_key) //google maps API from GCP, make sure google directions are enabled
-        )
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.map { s -> RouteJsonParser<Routes>().parse(s, Routes::class.java) }
-            ?.subscribe { r -> routeDrawer.drawPath(r) }
+        googleMap?.run {
+            moveCameraOnMap(latLng = source)
+
+            //Called the drawRouteOnMap extension to draw the polyline/route on google maps
+           disposable =  drawRouteOnMap(
+                getString(R.string.google_map_api_key),
+                source = source,
+                destination = destination,
+                context = context!!
+            )
         }
     }
+
+    override fun onDestroy() {
+        disposable?.dispose() // dispose the disposable on destroy to stop using the phone resources in bakground
+        super.onDestroy()
+    }
 }
+
 ```
 
 Screen Shot
