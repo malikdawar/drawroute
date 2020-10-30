@@ -41,9 +41,6 @@ dependencies {
     // or Koin for Android Architecture ViewModel
     implementation "org.koin:koin-androidx-scope:2.1.5"
 
-    //RX Java
-    implementation 'com.netflix.rxjava:rxjava-android:0.20.6'
-    implementation 'com.netflix.rxjava:rxjava-async-util:0.20.6'
     //OK Http
     implementation 'com.squareup.okhttp:okhttp:2.0.0'
 }
