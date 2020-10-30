@@ -86,8 +86,10 @@ enum class TravelMode {
 ```
 
 And taking all together:
+(Kotlin)
 
 ```Kotlin
+
 class RouteFragment : Fragment(), OnMapReadyCallback {
 
     private var googleMap: GoogleMap? = null
@@ -136,6 +138,31 @@ class RouteFragment : Fragment(), OnMapReadyCallback {
 
 ```
 
+(Java)
+
+```Java
+
+private final OnMapReadyCallback callback = googleMap -> {
+
+        LatLng source = new LatLng(31.490127, 74.316971); //starting point (LatLng)
+        LatLng destination = new LatLng(31.474316, 74.316112); // ending point (LatLng)
+
+        //zoom/move cam on map ready
+        MapExtensionKt.moveCameraOnMap(googleMap, 16, true, source);
+
+        //draw route on map
+       disposable = MapExtensionKt.drawRouteOnMap(googleMap,
+                getString(R.string.google_map_api_key),
+                getContext(),
+                source,
+                destination,
+                getActivity().getColor(R.color.pathColor),
+                true, true, 13, TravelMode.DRIVING);
+    };
+
+```
+
+
 Screen Shot
 ![image](screenshot/map.jpeg)
 
@@ -160,8 +187,4 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-
-
-
-
 
