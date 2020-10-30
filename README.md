@@ -4,7 +4,6 @@ DrawRoute
 [![Android Arsenal]( https://img.shields.io/badge/Android%20Arsenal-drawroute-green.svg?style=flat )]( https://android-arsenal.com/details/1/8158 )
 ![GitHub pull requests](https://img.shields.io/github/issues-pr/malikdawar/drawroute)
 
-===========
 
 DrawRoute wraps Google Directions API (https://developers.google.com/maps/documentation/directions/) using RxJava for Android so developers can download, parse and draw path on the map in very fast and flexible way. 
 Note: You need to generate an API key at Google cloud platform also don't forget to enable Directions API. Enjoy!
@@ -86,6 +85,7 @@ enum class TravelMode {
 ```
 
 And taking all together:
+
 (Kotlin)
 
 ```Kotlin
@@ -139,7 +139,6 @@ class RouteFragment : Fragment(), OnMapReadyCallback {
 ```
 
 (Java)
-
 ```Java
 
 private final OnMapReadyCallback callback = googleMap -> {
@@ -160,7 +159,9 @@ private final OnMapReadyCallback callback = googleMap -> {
                 true, true, 13, TravelMode.DRIVING);
     };
 
+
 ```
+
 
 
 Screen Shot
