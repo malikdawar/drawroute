@@ -171,6 +171,8 @@ Developed By
 ------------
 Malik Dawar - malikdawar332@gmail.com
 
+[Mobin Munir](https://github.com/mmobin789)
+
 License
 ----------
 
