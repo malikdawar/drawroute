@@ -14,6 +14,12 @@ The library contains two main parts.
     is responsible for sending request to **Google's Direction API** and handling the response
  - **DrawerAPI**
     is responsible for drawing the path on the map
+    
+    
+    
+read more on [medium](https://medium.com/better-programming/introducing-drawroute-a-kotlin-library-for-drawing-routes-on-google-maps-for-android-5e6cc99d58f6)
+
+
 
 
 How to add (gradle)
