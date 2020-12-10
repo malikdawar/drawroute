@@ -90,7 +90,7 @@ fun GoogleMap.drawRouteOnMap(
     color: Int = context.getColorCompat(R.color.pathColor),
     markers: Boolean = true,
     boundMarkers: Boolean = true,
-    polygonWidth: Int = 13,
+    polygonWidth: Int = 7,
     travelMode: TravelMode = TravelMode.DRIVING
 ): @NonNull Disposable? {
 
@@ -135,7 +135,7 @@ fun GoogleMap.drawRouteOnMap(
  */
 fun GoogleMap.boundMarkersOnMap(
     latLng: ArrayList<LatLng>,
-    padding: Int = 425
+    padding: Int = 5
 ) {
     val builder = LatLngBounds.Builder()
     for (marker in latLng) {
