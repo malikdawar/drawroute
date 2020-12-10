@@ -1,6 +1,7 @@
 DrawRoute
 
 [![Android Arsenal]( https://img.shields.io/badge/Android%20Arsenal-drawroute-green.svg?style=flat )]( https://android-arsenal.com/details/1/8158 )
+[![](https://jitpack.io/v/malikdawar/drawroute.svg)](https://jitpack.io/#malikdawar/drawroute)
 ![GitHub pull requests](https://img.shields.io/github/issues-pr/malikdawar/drawroute)
 
 
@@ -37,7 +38,7 @@ allprojects {
 Step2: Add the dependency
 ```xml
 dependencies {
-	implementation 'com.github.malikdawar:drawroute:1.1-rx'
+	implementation 'com.github.malikdawar:drawroute:1.2-rx'
 	implementation 'io.reactivex.rxjava3:rxandroid:3.0.0' // add the support for RX
 }
 ```
