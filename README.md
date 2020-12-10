@@ -38,6 +38,7 @@ Step2: Add the dependency
 ```xml
 dependencies {
 	implementation 'com.github.malikdawar:drawroute:1.1-rx'
+	implementation 'io.reactivex.rxjava3:rxandroid:3.0.0' // add the support for RX
 }
 ```
 Otherwise you have to use library directly in your project.
