@@ -18,7 +18,7 @@ import com.maps.route.extensions.moveCameraOnMap
 import com.maps.route.model.Legs
 import io.reactivex.rxjava3.disposables.Disposable
 
-class RouteFragment : Fragment(), OnMapReadyCallback, EstimationsCallBack {
+class RouteFragment : Fragment(), OnMapReadyCallback, EstimationsCallBack { // Only need to implement EstimationsCallBack when you need estimated time of arrival or the distance between two locations
 
     private var googleMap: GoogleMap? = null
     private var disposable: Disposable? = null
