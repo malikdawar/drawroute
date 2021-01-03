@@ -124,7 +124,7 @@ fun GoogleMap.drawRouteOnMap(
     )?.observeOn(AndroidSchedulers.mainThread())
         ?.map { s -> RouteJsonParser<Routes>().parse(s, Routes::class.java) }
         ?.subscribe { r ->
-            estimationsCallBack?.estimatedTimeOfArrival(r.routes?.get(0)?.legs?.get(0))
+            estimationsCallBack?.routeEstimations(r.routes?.get(0)?.legs?.get(0))
             routeDrawer.drawPath(r)
             // if user requires to bound the markers with padding
             if (boundMarkers)
@@ -159,7 +159,7 @@ fun Any.getTravelEstimations(
     )?.observeOn(AndroidSchedulers.mainThread())
         ?.map { s -> RouteJsonParser<Routes>().parse(s, Routes::class.java) }
         ?.subscribe { r ->
-            estimationsCallBack.estimatedTimeOfArrival(r.routes?.get(0)?.legs?.get(0))
+            estimationsCallBack.routeEstimations(r.routes?.get(0)?.legs?.get(0))
         }
 }
 

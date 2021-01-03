@@ -87,7 +87,7 @@ class RouteFragment : Fragment(), OnMapReadyCallback, EstimationsCallBack { // O
     }
 
     // Only need to Override this method when you need estimated time of arrival or the distance between two locations
-    override fun estimatedTimeOfArrival(legs: Legs?) {
+    override fun routeEstimations(legs: Legs?) {
         //Estimated time of arrival
         Log.d("estimatedTimeOfArrival", "${legs?.duration?.text}")
         Log.d("estimatedTimeOfArrival", "${legs?.duration?.value}")
