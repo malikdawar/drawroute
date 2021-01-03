@@ -38,7 +38,7 @@ allprojects {
 Step2: Add the dependency
 ```xml
 dependencies {
-	implementation 'com.github.malikdawar:drawroute:1.2-rx'
+	implementation 'com.github.malikdawar:drawroute:1.3'
 	implementation 'io.reactivex.rxjava3:rxandroid:3.0.0' // add the support for RX
 }
 ```
@@ -169,7 +169,58 @@ private final OnMapReadyCallback callback = googleMap -> {
 
 ```
 
+Route Estimations
+=================
 
+(Kotlin)
+```kotlin
+// Implement this interface in your Activity/Fragment where you want to get the Estimated time of arrival or the Distance between the points
+interface EstimationsCallBack{
+    fun routeEstimations(legs: Legs?)
+}
+```
+
+In your Activity/Fragmant
+
+```kotlin 
+
+class YourFragment : Fragment(), OnMapReadyCallback, EstimationsCallBack {
+-
+-
+-
+-
+//if you only want the Estimates (Distance & Time of arrival) for ETA we dont need maps only API Key, locations and interface ref are required.
+        getTravelEstimations(
+            mapsApiKey = getString(R.string.google_map_api_key),
+            source = source,
+            destination = destination,
+            estimationsCallBack = this
+        )
+
+
+//if you only want to draw a route on maps and also need the ETAs then implement the EstimationsCallBack and pass the ref like this
+disposable = drawRouteOnMap(
+                getString(R.string.google_map_api_key),
+                source = source,
+                destination = destination,
+                context = context!!,
+                estimationsCallBack = this@RouteFragment
+            )
+	
+	
+ // Only need to Override this method when you need estimated time of arrival or the distance between two locations
+    override fun routeEstimations(legs: Legs?) {
+        //Estimated time of arrival
+        Log.d("estimatedTimeOfArrival", "${legs?.duration?.text}")
+        Log.d("estimatedTimeOfArrival", "${legs?.duration?.value}")
+
+        //Google suggested path distance
+        Log.d("GoogleSuggestedDistance", "${legs?.distance?.text}")
+        Log.d("GoogleSuggestedDistance", "${legs?.distance?.text}")
+    }
+    
+    For more please refer to the RouteFragment in sample app. Enjoy :)
+  ```  
 
 Screen Shot
 ![image](screenshot/map.jpeg)
