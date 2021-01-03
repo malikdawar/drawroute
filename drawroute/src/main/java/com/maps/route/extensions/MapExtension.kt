@@ -8,6 +8,7 @@ import com.google.android.gms.maps.model.*
 import com.maps.route.R
 import com.maps.route.RouteDrawer
 import com.maps.route.RouteRest
+import com.maps.route.callbacks.EstimationsCallBack
 import com.maps.route.model.Routes
 import com.maps.route.model.TravelMode
 import com.maps.route.parser.RouteJsonParser
@@ -80,6 +81,8 @@ fun GoogleMap.moveCameraOnMap(
  * @param boundMarkers not required as by default = true
  * @param polygonWidth not required as by default = 13
  * @param travelMode not required as by default = DRIVING, can be DRIVING, WALKING, BICYCLING, TRANSIT
+ * @param estimationsCallBack its an interface that will be responsible to provide the ETA(Estimated time of arrival) in your activity/Fragment.
+     If you wan the ETAs then implement this interface in your Activity/Fragment and pass the ref in the extension method. otherwise just ignore it.
  * @author Dawar Malik.
  */
 fun GoogleMap.drawRouteOnMap(
@@ -91,11 +94,12 @@ fun GoogleMap.drawRouteOnMap(
     markers: Boolean = true,
     boundMarkers: Boolean = true,
     polygonWidth: Int = 7,
-    travelMode: TravelMode = TravelMode.DRIVING
+    travelMode: TravelMode = TravelMode.DRIVING,
+    estimationsCallBack: EstimationsCallBack? = null // if you don't want the ETAs then ignore it otherwise pass the interface imp here and get the ETA in overrided fun in your activity
 ): @NonNull Disposable? {
 
     // if user need the source and destination markers
-    if (markers){
+    if (markers) {
         context.run {
             drawMarker(location = source, context = this)
             drawMarker(location = destination, context = this)
@@ -113,17 +117,49 @@ fun GoogleMap.drawRouteOnMap(
 
     //API call to get the path points from google
     val routeRest = RouteRest()
-  return routeRest.getJsonDirections(
+    return routeRest.getJsonDirections(
         source, destination, //starting and ending point
         travelMode, //Travel mode
         mapsApiKey //google maps API from GCP, make sure google directions are enabled
     )?.observeOn(AndroidSchedulers.mainThread())
         ?.map { s -> RouteJsonParser<Routes>().parse(s, Routes::class.java) }
         ?.subscribe { r ->
+            estimationsCallBack?.estimatedTimeOfArrival(r.routes?.get(0)?.legs?.get(0))
             routeDrawer.drawPath(r)
             // if user requires to bound the markers with padding
             if (boundMarkers)
                 boundMarkersOnMap(arrayListOf(source, destination))
+        }
+}
+
+
+/**
+ * Extension function to get ETA(Estimated time of arrival). Just call the method as simple getTravelEstimations(.......)
+    in your activity and get the ETA, don't forget to implement the Estimations interface in that view.
+ * @param mapsApiKey google maps API from GCP, make sure google directions are enabled
+ * @param context Context
+ * @param source source point from where the path is required
+ * @param destination destination point till where the path is required
+ * @param travelMode not required as by default = DRIVING, can be DRIVING, WALKING, BICYCLING, TRANSIT
+ * @author Dawar Malik.
+ */
+fun Any.getTravelEstimations(
+    mapsApiKey: String,
+    source: LatLng,
+    destination: LatLng,
+    travelMode: TravelMode = TravelMode.DRIVING,
+    estimationsCallBack: EstimationsCallBack
+) {
+    //API call to get the path points from google
+    val routeRest = RouteRest()
+    routeRest.getJsonDirections(
+        source, destination, //starting and ending point
+        travelMode, //Travel mode
+        mapsApiKey //google maps API from GCP, make sure google directions are enabled
+    )?.observeOn(AndroidSchedulers.mainThread())
+        ?.map { s -> RouteJsonParser<Routes>().parse(s, Routes::class.java) }
+        ?.subscribe { r ->
+            estimationsCallBack.estimatedTimeOfArrival(r.routes?.get(0)?.legs?.get(0))
         }
 }
 
