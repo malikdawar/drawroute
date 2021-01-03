@@ -40,7 +40,7 @@ public class MapsFragment extends Fragment implements EstimationsCallBack { // O
                 source,
                 destination,
                 getActivity().getColor(R.color.pathColor),
-                true, true, 13, TravelMode.DRIVING, null);
+                true, true, 13, TravelMode.DRIVING, this/*(this if you want the ETA otherwise just pass null)*/);
     };
 
     @Nullable
@@ -71,6 +71,9 @@ public class MapsFragment extends Fragment implements EstimationsCallBack { // O
     // Only need to Override this method when you need estimated time of arrival or the distance between two locations
     @Override
     public void estimatedTimeOfArrival(@org.jetbrains.annotations.Nullable Legs legs) {
+        if(legs == null)
+            return;
+
         //Estimated time of arrival
         Log.d("estimatedTimeOfArrival", "withUnit"+ legs.getDuration().getText());
         Log.d("estimatedTimeOfArrival", "InMilliSec"+ legs.getDuration().getValue());
