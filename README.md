@@ -29,7 +29,7 @@ allprojects {
 Step2: Add the dependency
 ```xml
 dependencies {
-	implementation 'com.github.malikdawar:drawroute:1.4'
+	implementation 'com.github.malikdawar:drawroute:1.5'
 }
 ```
 Otherwise you have to use library directly in your project.
