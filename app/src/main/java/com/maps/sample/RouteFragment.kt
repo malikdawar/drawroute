@@ -10,18 +10,14 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
-import com.maps.route.callbacks.EstimationsCallBack
 import com.maps.route.extensions.drawMarker
 import com.maps.route.extensions.drawRouteOnMap
 import com.maps.route.extensions.getTravelEstimations
 import com.maps.route.extensions.moveCameraOnMap
-import com.maps.route.model.Legs
-import io.reactivex.rxjava3.disposables.Disposable
 
-class RouteFragment : Fragment(), OnMapReadyCallback, EstimationsCallBack { // Only need to implement EstimationsCallBack when you need estimated time of arrival or the distance between two locations
+class RouteFragment : Fragment(), OnMapReadyCallback {
 
     private var googleMap: GoogleMap? = null
-    private var disposable: Disposable? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,9 +45,17 @@ class RouteFragment : Fragment(), OnMapReadyCallback, EstimationsCallBack { // O
         getTravelEstimations(
             mapsApiKey = getString(R.string.google_map_api_key),
             source = source,
-            destination = destination,
-            estimationsCallBack = this
-        )
+            destination = destination
+        ) { estimates ->
+            estimates?.let {
+                //Google Estimated time of arrival
+                Log.d(TAG, "ETA: ${it.duration?.text}, ${it.duration?.value}")
+                //Google suggested path distance
+                Log.d(TAG, "Distance: ${it.distance?.text}, ${it.distance?.text}")
+
+            } ?: Log.e(TAG, "Nothing found")
+        }
+
 
         googleMap?.run {
             //if you want to move the map on specific location
@@ -62,7 +66,7 @@ class RouteFragment : Fragment(), OnMapReadyCallback, EstimationsCallBack { // O
 
             //if you only want to draw a route on maps
             //Called the drawRouteOnMap extension to draw the polyline/route on google maps
-            disposable = drawRouteOnMap(
+            drawRouteOnMap(
                 getString(R.string.google_map_api_key),
                 source = source,
                 destination = destination,
@@ -71,29 +75,24 @@ class RouteFragment : Fragment(), OnMapReadyCallback, EstimationsCallBack { // O
 
             //if you only want to draw a route on maps and also need the ETAs then implement the EstimationsCallBack and pass the ref like this
             //Called the drawRouteOnMap extension to draw the polyline/route on google maps
-            disposable = drawRouteOnMap(
+            drawRouteOnMap(
                 getString(R.string.google_map_api_key),
                 source = source,
                 destination = destination,
                 context = context!!,
-                estimationsCallBack = this@RouteFragment
-            )
+            ) { estimates ->
+                estimates?.let {
+                    //Google Estimated time of arrival
+                    Log.d(TAG, "ETA: ${it.duration?.text}, ${it.duration?.value}")
+                    //Google suggested path distance
+                    Log.d(TAG, "Distance: ${it.distance?.text}, ${it.distance?.text}")
+
+                } ?: Log.e(TAG, "Nothing found")
+            }
         }
     }
 
-    override fun onDestroy() {
-        disposable?.dispose()
-        super.onDestroy()
-    }
-
-    // Only need to Override this method when you need estimated time of arrival or the distance between two locations
-    override fun routeEstimations(legs: Legs?) {
-        //Estimated time of arrival
-        Log.d("estimatedTimeOfArrival", "${legs?.duration?.text}")
-        Log.d("estimatedTimeOfArrival", "${legs?.duration?.value}")
-
-        //Google suggested path distance
-        Log.d("GoogleSuggestedDistance", "${legs?.distance?.text}")
-        Log.d("GoogleSuggestedDistance", "${legs?.distance?.text}")
+    companion object {
+        var TAG = RouteFragment::javaClass.name
     }
 }
