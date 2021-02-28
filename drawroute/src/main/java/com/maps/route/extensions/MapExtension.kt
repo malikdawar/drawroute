@@ -124,16 +124,21 @@ fun GoogleMap.drawRouteOnMap(
         )?.observeOn(AndroidSchedulers.mainThread())
             ?.map { s -> RouteJsonParser<Routes>().parse(s, Routes::class.java) }
             ?.subscribe { r ->
-                val legs = r.routes?.get(0)?.legs?.get(0)
+                val routes = r.routes
 
-                legs.let {
-                    estimationsCallBack?.routeEstimations(it)
-                    estimates?.invoke(it)
+                if (routes.isNullOrEmpty().not()) {
+                    routes!![0].legs?.get(0).let {
+                        estimationsCallBack?.routeEstimations(it)
+                        estimates?.invoke(it)
+                    }
+                    routeDrawer.drawPath(r)
+                    // if user requires to bound the markers with padding
+                    if (boundMarkers)
+                        boundMarkersOnMap(arrayListOf(source, destination))
+                } else {
+                    estimationsCallBack?.routeEstimations(null)
+                    estimates?.invoke(null)
                 }
-                routeDrawer.drawPath(r)
-                // if user requires to bound the markers with padding
-                if (boundMarkers)
-                    boundMarkersOnMap(arrayListOf(source, destination))
             }
     }
 }
@@ -167,10 +172,16 @@ fun getTravelEstimations(
     )?.observeOn(AndroidSchedulers.mainThread())
         ?.map { s -> RouteJsonParser<Routes>().parse(s, Routes::class.java) }
         ?.subscribe { r ->
-
-            r.routes?.get(0)?.legs?.get(0).let {
-                estimationsCallBack?.routeEstimations(it)
-                estimates?.invoke(it)
+            r.routes.apply {
+                if (isNullOrEmpty().not()) {
+                    this!![0].legs?.get(0).let {
+                        estimationsCallBack?.routeEstimations(it)
+                        estimates?.invoke(it)
+                    }
+                } else {
+                    estimationsCallBack?.routeEstimations(null)
+                    estimates?.invoke(null)
+                }
             }
         }
 }
