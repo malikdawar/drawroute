@@ -5,18 +5,9 @@ DrawRoute
 ![GitHub pull requests](https://img.shields.io/github/issues-pr/malikdawar/drawroute)
 
 
-DrawRoute wraps Google Directions API (https://developers.google.com/maps/documentation/directions/) using RxJava for Android so developers can download, parse and draw path on the map in very fast and flexible way. 
+DrawRoute wraps Google Directions API (https://developers.google.com/maps/documentation/directions/) using RxAndroid for Android. Now developers can easily Draw route on maps, can get the Estimated time of arrival and the Google suggested distance between two locations in a very easy and flexible. 
 Note: You need to generate an API key at Google cloud platform also don't forget to enable Directions API. Enjoy!
 
-
-The library contains two main parts.
- - **RouteAPI**
-    is responsible for sending request to **Google's Direction API** and handling the response
- - **DrawerAPI**
-    is responsible for drawing the path on the map
-    
-    
-    
 read more on [medium](https://medium.com/better-programming/introducing-drawroute-a-kotlin-library-for-drawing-routes-on-google-maps-for-android-5e6cc99d58f6)
 
 
@@ -38,8 +29,7 @@ allprojects {
 Step2: Add the dependency
 ```xml
 dependencies {
-	implementation 'com.github.malikdawar:drawroute:1.3'
-	implementation 'io.reactivex.rxjava3:rxandroid:3.0.0' // add the support for RX
+	implementation 'com.github.malikdawar:drawroute:1.4'
 }
 ```
 Otherwise you have to use library directly in your project.
@@ -91,6 +81,52 @@ enum class TravelMode {
 
 ```
 
+Route Estimations
+=================
+
+(Kotlin)
+
+In your Activity/Fragmant
+
+```kotlin 
+
+class YourFragment : Fragment(), OnMapReadyCallback {
+
+	
+	//if you only want the Estimates (Distance & Time of arrival)
+        getTravelEstimations(
+            mapsApiKey = getString(R.string.google_map_api_key),
+            source = source,
+            destination = destination
+        ) { estimates ->
+            estimates?.let {
+                //Google Estimated time of arrival
+                Log.d(TAG, "ETA: ${it.duration?.text}, ${it.duration?.value}")
+                //Google suggested path distance
+                Log.d(TAG, "Distance: ${it.distance?.text}, ${it.distance?.text}")
+
+            } ?: Log.e(TAG, "Nothing found")
+        }
+
+
+	//if you only want to draw a route on maps and also need the ETAs
+        //Called the drawRouteOnMap extension to draw the polyline/route on google maps
+            drawRouteOnMap(
+                getString(R.string.google_map_api_key),
+                source = source,
+                destination = destination,
+                context = context!!,
+            ) { estimates ->
+                estimates?.let {
+                    //Google Estimated time of arrival
+                    Log.d(TAG, "ETA: ${it.duration?.text}, ${it.duration?.value}")
+                    //Google suggested path distance
+                    Log.d(TAG, "Distance: ${it.distance?.text}, ${it.distance?.text}")
+
+                } ?: Log.e(TAG, "Nothing found")
+            }
+  ```  
+
 And taking all together:
 
 (Kotlin)
@@ -100,7 +136,6 @@ And taking all together:
 class RouteFragment : Fragment(), OnMapReadyCallback {
 
     private var googleMap: GoogleMap? = null
-    private var disposable: Disposable?=null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -124,22 +159,59 @@ class RouteFragment : Fragment(), OnMapReadyCallback {
         val source = LatLng(31.490127, 74.316971) //starting point (LatLng)
         val destination = LatLng(31.474316, 74.316112) // ending point (LatLng)
 
+        //if you only want the Estimates (Distance & Time of arrival)
+        getTravelEstimations(
+            mapsApiKey = getString(R.string.google_map_api_key),
+            source = source,
+            destination = destination
+        ) { estimates ->
+            estimates?.let {
+                //Google Estimated time of arrival
+                Log.d(TAG, "ETA: ${it.duration?.text}, ${it.duration?.value}")
+                //Google suggested path distance
+                Log.d(TAG, "Distance: ${it.distance?.text}, ${it.distance?.text}")
+
+            } ?: Log.e(TAG, "Nothing found")
+        }
+
+
         googleMap?.run {
+            //if you want to move the map on specific location
             moveCameraOnMap(latLng = source)
 
+            //if you want to drop a marker of maps, call it
+            drawMarker(location = source, context = requireContext(), title = "test marker")
+
+            //if you only want to draw a route on maps
             //Called the drawRouteOnMap extension to draw the polyline/route on google maps
-           disposable =  drawRouteOnMap(
+            drawRouteOnMap(
                 getString(R.string.google_map_api_key),
                 source = source,
                 destination = destination,
                 context = context!!
             )
+
+            //if you only want to draw a route on maps and also need the ETAs
+            //Called the drawRouteOnMap extension to draw the polyline/route on google maps
+            drawRouteOnMap(
+                getString(R.string.google_map_api_key),
+                source = source,
+                destination = destination,
+                context = context!!,
+            ) { estimates ->
+                estimates?.let {
+                    //Google Estimated time of arrival
+                    Log.d(TAG, "ETA: ${it.duration?.text}, ${it.duration?.value}")
+                    //Google suggested path distance
+                    Log.d(TAG, "Distance: ${it.distance?.text}, ${it.distance?.text}")
+
+                } ?: Log.e(TAG, "Nothing found")
+            }
         }
     }
 
-    override fun onDestroy() {
-        disposable?.dispose() // dispose the disposable on destroy to stop using the phone resources in bakground
-        super.onDestroy()
+    companion object {
+        var TAG = RouteFragment::javaClass.name
     }
 }
 
@@ -157,70 +229,33 @@ private final OnMapReadyCallback callback = googleMap -> {
         MapExtensionKt.moveCameraOnMap(googleMap, 16, true, source);
 
         //draw route on map
-       MapExtensionKt.drawRouteOnMap(googleMap,
+       //If want to draw route on maps and also required the Estimates else just pass the null as a param for lambda
+        MapExtensionKt.drawRouteOnMap(googleMap,
                 getString(R.string.google_map_api_key),
                 getContext(),
                 source,
                 destination,
                 getActivity().getColor(R.color.pathColor),
-                true, true, 13, TravelMode.DRIVING);
+                true, true, 13, TravelMode.DRIVING, null /*deprecated*/,
+                //call the lambda if you need the estimates
+                (estimates -> {
+                    //Estimated time of arrival
+                    Log.d("estimatedTimeOfArrival", "withUnit " + estimates.getDuration().getText());
+                    Log.d("estimatedTimeOfArrival", "InMilliSec " + estimates.getDuration().getValue());
+
+                    //Google suggested path distance
+                    Log.d("GoogleSuggestedDistance", "withUnit " + estimates.getDistance().getText());
+                    Log.d("GoogleSuggestedDistance", "InMilliSec " + estimates.getDistance().getValue());
+                    return null;
+                }));
+	
     };
 
 
-```
-
-Route Estimations
-=================
-
-(Kotlin)
-```kotlin
-// Implement this interface in your Activity/Fragment where you want to get the Estimated time of arrival or the Distance between the points
-interface EstimationsCallBack{
-    fun routeEstimations(legs: Legs?)
-}
-```
-
-In your Activity/Fragmant
-
-```kotlin 
-
-class YourFragment : Fragment(), OnMapReadyCallback, EstimationsCallBack {
--
--
--
--
-//if you only want the Estimates (Distance & Time of arrival) for ETA we dont need maps only API Key, locations and interface ref are required.
-        getTravelEstimations(
-            mapsApiKey = getString(R.string.google_map_api_key),
-            source = source,
-            destination = destination,
-            estimationsCallBack = this
-        )
-
-
-//if you only want to draw a route on maps and also need the ETAs then implement the EstimationsCallBack and pass the ref like this
-disposable = drawRouteOnMap(
-                getString(R.string.google_map_api_key),
-                source = source,
-                destination = destination,
-                context = context!!,
-                estimationsCallBack = this@RouteFragment
-            )
-	
-	
- // Only need to Override this method when you need estimated time of arrival or the distance between two locations
-    override fun routeEstimations(legs: Legs?) {
-        //Estimated time of arrival
-        Log.d("estimatedTimeOfArrival", "${legs?.duration?.text}")
-        Log.d("estimatedTimeOfArrival", "${legs?.duration?.value}")
-
-        //Google suggested path distance
-        Log.d("GoogleSuggestedDistance", "${legs?.distance?.text}")
-        Log.d("GoogleSuggestedDistance", "${legs?.distance?.text}")
-    }
-    
     For more please refer to the RouteFragment in sample app. Enjoy :)
-  ```  
+```
+
+
 
 Screen Shot
 ![image](screenshot/map.jpeg)
