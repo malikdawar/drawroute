@@ -147,6 +147,7 @@ in your activity and get the ETA, don't forget to implement the Estimations inte
  * @param source source point from where the path is required
  * @param destination destination point till where the path is required
  * @param travelMode not required as by default = DRIVING, can be DRIVING, WALKING, BICYCLING, TRANSIT
+ * @param estimates lambda to get the estimates data from google
  * @author Dawar Malik.
  */
 fun getTravelEstimations(
