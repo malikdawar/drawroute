@@ -1,30 +1,22 @@
 package com.maps.sample;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.maps.route.callbacks.EstimationsCallBack;
 import com.maps.route.extensions.MapExtensionKt;
-import com.maps.route.model.Legs;
 import com.maps.route.model.TravelMode;
 
-import io.reactivex.rxjava3.disposables.Disposable;
-
-public class MapsFragment extends Fragment implements EstimationsCallBack { // Only need to implement EstimationsCallBack when you need estimated time of arrival or the distance between two locations
-
-    private Disposable disposable;
-
+public class MapsFragment extends Fragment {
     private final OnMapReadyCallback callback = googleMap -> {
 
         LatLng source = new LatLng(31.490127, 74.316971); //starting point (LatLng)
@@ -33,15 +25,57 @@ public class MapsFragment extends Fragment implements EstimationsCallBack { // O
         //zoom/move cam on map ready
         MapExtensionKt.moveCameraOnMap(googleMap, 16, true, source);
 
-        //draw route on map
-       disposable = MapExtensionKt.drawRouteOnMap(googleMap,
+        //only draw route on map
+        MapExtensionKt.drawRouteOnMap(googleMap,
                 getString(R.string.google_map_api_key),
                 getContext(),
                 source,
                 destination,
                 getActivity().getColor(R.color.pathColor),
-                true, true, 13, TravelMode.DRIVING, this/*(this if you want the ETA otherwise just pass null)*/);
+                true, true, 13, TravelMode.DRIVING, null, null);
+
+
+        //If want to draw route on maps and also required the Estimates
+        MapExtensionKt.drawRouteOnMap(googleMap,
+                getString(R.string.google_map_api_key),
+                getContext(),
+                source,
+                destination,
+                getActivity().getColor(R.color.pathColor),
+                true, true, 13, TravelMode.DRIVING, null /*deprecated*/,
+                //call the lambda if you need the estimates
+                (estimates -> {
+                    //Estimated time of arrival
+                    Log.d("estimatedTimeOfArrival", "withUnit " + estimates.getDuration().getText());
+                    Log.d("estimatedTimeOfArrival", "InMilliSec " + estimates.getDuration().getValue());
+
+                    //Google suggested path distance
+                    Log.d("GoogleSuggestedDistance", "withUnit " + estimates.getDistance().getText());
+                    Log.d("GoogleSuggestedDistance", "InMilliSec " + estimates.getDistance().getValue());
+                    return null;
+                }));
+
+
+        //if you only want the Estimates (Distance & Time of arrival)
+        MapExtensionKt.getTravelEstimations(
+                getString(R.string.google_map_api_key),
+                source,
+                destination,
+                TravelMode.DRIVING,
+                null /*deprecated*/,
+                //call the lambda if you need the estimates
+                (estimates -> {
+                    //Estimated time of arrival
+                    Log.d("estimatedTimeOfArrival", "withUnit " + estimates.getDuration().getText());
+                    Log.d("estimatedTimeOfArrival", "InMilliSec " + estimates.getDuration().getValue());
+
+                    //Google suggested path distance
+                    Log.d("GoogleSuggestedDistance", "withUnit " + estimates.getDistance().getText());
+                    Log.d("GoogleSuggestedDistance", "InMilliSec " + estimates.getDistance().getValue());
+                    return null;
+                }));
     };
+
 
     @Nullable
     @Override
@@ -58,28 +92,5 @@ public class MapsFragment extends Fragment implements EstimationsCallBack { // O
         if (mapFragment != null) {
             mapFragment.getMapAsync(callback);
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        if(disposable!=null)
-            disposable.dispose();
-        super.onDestroy();
-
-    }
-
-    // Only need to Override this method when you need estimated time of arrival or the distance between two locations
-    @Override
-    public void routeEstimations(@org.jetbrains.annotations.Nullable Legs legs) {
-        if(legs == null)
-            return;
-
-        //Estimated time of arrival
-        Log.d("estimatedTimeOfArrival", "withUnit"+ legs.getDuration().getText());
-        Log.d("estimatedTimeOfArrival", "InMilliSec"+ legs.getDuration().getValue());
-
-        //Google suggested path distance
-        Log.d("GoogleSuggestedDistance", "withUnit"+ legs.getDistance().getText());
-        Log.d("GoogleSuggestedDistance", "InMilliSec"+ legs.getDistance().getValue());
     }
 }

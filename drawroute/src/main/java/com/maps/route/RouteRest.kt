@@ -23,9 +23,9 @@ import com.squareup.okhttp.OkHttpClient
 import com.squareup.okhttp.Request
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
-
 import java.io.IOException
 import java.util.*
+import kotlin.jvm.Throws
 
 
 class RouteRest : RouteApi {
@@ -44,7 +44,6 @@ class RouteRest : RouteApi {
                 e.printStackTrace()
             null
             }
-
         }
 
 
