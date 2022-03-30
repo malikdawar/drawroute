@@ -1,7 +1,7 @@
 DrawRoute
 
 [![Android Arsenal]( https://img.shields.io/badge/Android%20Arsenal-drawroute-green.svg?style=flat )]( https://android-arsenal.com/details/1/8158 )
-[![](https://jitpack.io/v/malikdawar/drawroute.svg)](https://jitpack.io/#malikdawar/drawroute)
+[![JitPack](https://jitpack.io/v/malikdawar/drawroute.svg)](https://jitpack.io/#malikdawar/drawroute)
 
 
 DrawRoute wraps Google Directions API (https://developers.google.com/maps/documentation/directions/) using RxAndroid for Android. Now developers can easily Draw route on maps, can get the Estimated time of arrival and the Google suggested distance between two locations in a very easy and flexible. 
