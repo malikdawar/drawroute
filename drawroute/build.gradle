@@ -1,14 +1,13 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: "kotlin-parcelize"
-//apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'maven-publish'
-
 group = 'com.github.malikdawar'
 
 android {
     namespace "com.maps.route"
     compileSdk 34
+
     defaultConfig {
         minSdkVersion 23
         targetSdkVersion 34
@@ -33,13 +32,25 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+}
 
+publishing {
+    publications {
+        release(MavenPublication) {
+            groupId = 'com.maps'
+            artifactId = 'route'
+            version = '2.1'
+
+            afterEvaluate {
+                from components.release
+            }
+        }
+    }
 }
 
 dependencies {
     implementation libs.androidx.core.ktx
     implementation libs.androidx.appcompat
-    //implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
     //Google play services
     implementation libs.play.services.location
     implementation libs.play.services.maps
@@ -47,7 +58,6 @@ dependencies {
     implementation libs.okhttp
     //Gson
     implementation libs.gson
-
     // Kotlin Coroutines
     implementation libs.kotlinx.coroutines.core
     implementation libs.kotlinx.coroutines.android
