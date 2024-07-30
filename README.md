@@ -33,7 +33,7 @@ Read more on [Medium](https://medium.com/better-programming/introducing-drawrout
 
    ```groovy
    dependencies {
-        implementation 'com.github.malikdawar:drawroute:2.0'
+        implementation 'com.github.malikdawar:drawroute:TAG' //replace TAG with the latest build number at jitpack = 2.2
    }
    ```
 
