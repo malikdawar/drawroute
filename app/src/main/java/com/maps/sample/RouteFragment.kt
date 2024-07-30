@@ -126,6 +126,6 @@ class RouteFragment : Fragment(), OnMapReadyCallback {
 
     companion object {
         // Tag for logging and debugging purposes
-        var TAG = RouteFragment::class.java.simpleName
+        private val TAG = RouteFragment::class.java.simpleName
     }
 }
