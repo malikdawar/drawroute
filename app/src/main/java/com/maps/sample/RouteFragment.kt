@@ -1,9 +1,11 @@
 package com.maps.sample
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -32,7 +34,10 @@ class RouteFragment : Fragment(), OnMapReadyCallback {
     private lateinit var googleMap: GoogleMap
 
     // Initialize the DrawRouteSDK with your Google Maps API key
-    private val drawRouteSDK: DrawRouteSDK = DrawRouteSDKImpl("YOUR_API_KEY_HERE")
+    private val drawRouteSDK: DrawRouteSDK =
+        DrawRouteSDKImpl("AIzaSyC_vv0_ZnK0QbqSP4n-0bX6fsUQHBW_Juw")
+
+    private lateinit var tvEstimates: TextView
 
     /**
      * Inflates the layout for this fragment.
@@ -64,6 +69,7 @@ class RouteFragment : Fragment(), OnMapReadyCallback {
         // Initialize the Google Map by finding the SupportMapFragment
         val mapFragment =
             childFragmentManager.findFragmentById(R.id.mapView) as SupportMapFragment
+        tvEstimates = view.findViewById(R.id.tvEstimates)
         // Asynchronously request the Google Map to be ready
         mapFragment.getMapAsync(this)
     }
@@ -74,15 +80,16 @@ class RouteFragment : Fragment(), OnMapReadyCallback {
      *
      * @param googleMap The GoogleMap object representing the Google Map.
      */
+    @SuppressLint("SetTextI18n")
     override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
 
         // Define source and destination locations using LatLng
-        val source = LatLng(35.91927118264419, 14.472031528630778) // starting point (LatLng)
-        val destination = LatLng(35.91176380055831, 14.464306767283505) // ending point (LatLng)
+        val source = LatLng(31.48756729419296, 74.30382711498905) // starting point (LatLng)
+        val destination = LatLng(31.435732711542265, 74.25902349917489) // ending point (LatLng)
 
-        // Fetch travel estimations between source and destination using the DrawRouteSDK
-        drawRouteSDK.getTravelEstimations(
+        // example: to fetch travel estimations between source and destination using the DrawRouteSDK
+        /*drawRouteSDK.getTravelEstimations(
             source = source,
             destination = destination,
             travelMode = TravelMode.DRIVING,
@@ -94,7 +101,7 @@ class RouteFragment : Fragment(), OnMapReadyCallback {
                 // Handle any errors that occurred during the estimation retrieval
                 println("$TAG: getTravelEstimations::error ${throwable.message}")
             }
-        )
+        )*/
 
         // Configure the Google Map with camera movement, markers, and route drawing
         googleMap.run {
@@ -115,6 +122,7 @@ class RouteFragment : Fragment(), OnMapReadyCallback {
                 estimates = { leg ->
                     // Handle successful drawing of route and display estimations
                     println("$TAG: drawRoute::estimates ${leg.duration}")
+                    tvEstimates.text = "ETA: ${leg.duration?.text}"
                 },
                 error = { throwable ->
                     // Handle any errors that occurred during the route drawing
