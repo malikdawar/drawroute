@@ -1,17 +1,18 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: "kotlin-parcelize"
+//apply plugin: 'com.github.dcendents.android-maven'
 
-group='com.github.malikdawar'
+group = 'com.github.malikdawar'
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 34
     buildToolsVersion "30.0.3"
+    namespace "com.maps.route"
 
     defaultConfig {
         minSdkVersion 23
-        targetSdkVersion 30
+        targetSdkVersion 34
         versionCode 1
         versionName "1.0"
 
@@ -37,16 +38,18 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
-   // implementation 'io.reactivex.rxjava3:rxjava:3.0.0'
+    implementation libs.androidx.core.ktx
+    implementation libs.androidx.appcompat
+    //implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
     //Google play services
-    implementation 'com.google.android.gms:play-services-location:18.0.0'
-    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation libs.play.services.location
+    implementation libs.play.services.maps
     //OkHttp
-    implementation 'com.squareup.okhttp:okhttp:2.5.0'
+    implementation libs.okhttp
     //Gson
-    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation libs.gson
+
+    // Kotlin Coroutines
+    implementation libs.kotlinx.coroutines.core
+    implementation libs.kotlinx.coroutines.android
 }

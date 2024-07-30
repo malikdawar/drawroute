@@ -1,21 +1,4 @@
-/*
-
-Copyright 2020 Malik Dawar
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
- */
-package com.maps.route
+package com.maps.route.data
 
 import android.graphics.Color
 import com.google.android.gms.maps.GoogleMap
@@ -23,9 +6,9 @@ import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolylineOptions
-import com.maps.route.model.Routes
+import com.maps.route.model.Route
 
-class RouteDrawer private constructor(builder: RouteDrawerBuilder) : DrawerApi {
+internal class DrawRouteBuilder private constructor(builder: BuildRoute) {
 
     private val alpha: Float
     private val pathWidth: Int
@@ -47,17 +30,17 @@ class RouteDrawer private constructor(builder: RouteDrawerBuilder) : DrawerApi {
         bitmapDescriptor = builder.bitmapDescriptor
     }
 
-    override fun drawPath(routes: Routes) {
+    fun drawPath(routes: List<Route>) {
         var polylineOptions: PolylineOptions?
 
-        for (route in routes.routes!!) {
+        for (route in routes) {
             for (legs in route.legs!!) {
                 polylineOptions = PolylineOptions()
                 for (step in legs.steps!!) {
                     polylineOptions.add(
                         LatLng(
-                            step.startLocation?.lat!!,
-                            step.startLocation?.lng!!
+                            step?.startLocation?.lat!!,
+                            step.startLocation.lng!!
                         )
                     )
                     polylineOptions.width(pathWidth.toFloat())
@@ -68,34 +51,34 @@ class RouteDrawer private constructor(builder: RouteDrawerBuilder) : DrawerApi {
         }
     }
 
-    class RouteDrawerBuilder(internal val googleMap: GoogleMap) {
+    class BuildRoute(internal val googleMap: GoogleMap) {
         internal var bitmapDescriptor: BitmapDescriptor
         internal var pathWidth: Int
         internal var pathColor: Int
         internal var alpha: Float
 
-        fun withColor(pathColor: Int): RouteDrawerBuilder {
+        fun withColor(pathColor: Int): BuildRoute {
             this.pathColor = pathColor
             return this
         }
 
-        fun withWidth(pathWidth: Int): RouteDrawerBuilder {
+        fun withWidth(pathWidth: Int): BuildRoute {
             this.pathWidth = pathWidth
             return this
         }
 
-        fun withMarkerIcon(bitmapDescriptor: BitmapDescriptor): RouteDrawerBuilder {
+        fun withMarkerIcon(bitmapDescriptor: BitmapDescriptor): BuildRoute {
             this.bitmapDescriptor = bitmapDescriptor
             return this
         }
 
-        fun withAlpha(alpha: Float): RouteDrawerBuilder {
+        fun withAlpha(alpha: Float): BuildRoute {
             this.alpha = alpha
             return this
         }
 
-        fun build(): RouteDrawer {
-            return RouteDrawer(this)
+        fun build(): DrawRouteBuilder {
+            return DrawRouteBuilder(this)
         }
 
         init {

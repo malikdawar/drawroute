@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">Sample</string>
-    <string name="google_map_api_key" >Your API key</string>
+    <string name="api_key">YOUR_API_KEY_HERE</string>
 </resources>
