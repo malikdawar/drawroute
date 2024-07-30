@@ -35,7 +35,7 @@ class RouteFragment : Fragment(), OnMapReadyCallback {
 
     // Initialize the DrawRouteSDK with your Google Maps API key
     private val drawRouteSDK: DrawRouteSDK =
-        DrawRouteSDKImpl("AIzaSyC_vv0_ZnK0QbqSP4n-0bX6fsUQHBW_Juw")
+        DrawRouteSDKImpl("YOUR_API_KEY_HERE")
 
     private lateinit var tvEstimates: TextView
 
