@@ -18,7 +18,7 @@ Read more on [Medium](https://medium.com/better-programming/introducing-drawrout
    Add the following to your root `build.gradle` at the end of your repositories:
 
    ```groovy
-  dependencyResolutionManagement {
+   dependencyResolutionManagement {
 		repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
 		repositories {
 			mavenCentral()
@@ -27,7 +27,7 @@ Read more on [Medium](https://medium.com/better-programming/introducing-drawrout
 	}
    ```
 
-2. **Add the Dependency**
+3. **Add the Dependency**
 
    Add the following line to your module's `build.gradle` dependencies section:
 
