@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Sample</string>
     <string name="api_key">YOUR_API_KEY_HERE</string>
+    <string name="remove_route">Remove Route</string>
 </resources>

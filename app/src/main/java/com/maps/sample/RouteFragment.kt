@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -17,6 +16,7 @@ import com.maps.route.model.TravelMode
 import com.maps.route.utils.extensions.drawMarker
 import com.maps.route.utils.extensions.getColorCompat
 import com.maps.route.utils.extensions.moveCameraOnMap
+import com.maps.sample.databinding.FragmentMapRouteBinding
 
 /**
  * A [Fragment] that displays a Google Map and draws a route between two locations.
@@ -32,12 +32,11 @@ class RouteFragment : Fragment(), OnMapReadyCallback {
 
     // Reference to the GoogleMap object once it is ready
     private lateinit var googleMap: GoogleMap
+    private lateinit var binding: FragmentMapRouteBinding
 
     // Initialize the DrawRouteSDK with your Google Maps API key
     private val drawRouteSDK: DrawRouteSDK =
         DrawRouteSDKImpl("YOUR_API_KEY_HERE")
-
-    private lateinit var tvEstimates: TextView
 
     /**
      * Inflates the layout for this fragment.
@@ -47,13 +46,13 @@ class RouteFragment : Fragment(), OnMapReadyCallback {
      * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state as given here.
      * @return The View for the fragment's UI, or null.
      */
+
     override fun onCreateView(
         inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_map_route, container, false)
+        container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentMapRouteBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     /**
@@ -69,9 +68,13 @@ class RouteFragment : Fragment(), OnMapReadyCallback {
         // Initialize the Google Map by finding the SupportMapFragment
         val mapFragment =
             childFragmentManager.findFragmentById(R.id.mapView) as SupportMapFragment
-        tvEstimates = view.findViewById(R.id.tvEstimates)
         // Asynchronously request the Google Map to be ready
         mapFragment.getMapAsync(this)
+        // Button onclick listener
+        binding.btnRemoveRoute.setOnClickListener {
+            // Call teh removePaths in drawRouteSDK to remove the routes from maps
+            drawRouteSDK.removePaths()
+        }
     }
 
     /**
@@ -122,7 +125,9 @@ class RouteFragment : Fragment(), OnMapReadyCallback {
                 estimates = { leg ->
                     // Handle successful drawing of route and display estimations
                     println("$TAG: drawRoute::estimates ${leg.duration}")
-                    tvEstimates.text = "ETA: ${leg.duration?.text}"
+                    binding.tvEstimates.text = "ETA: ${leg.duration?.text}"
+                    // make the btnRemoveRoute visible on success
+                    binding.btnRemoveRoute.visibility = View.VISIBLE
                 },
                 error = { throwable ->
                     // Handle any errors that occurred during the route drawing

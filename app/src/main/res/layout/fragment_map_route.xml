@@ -22,4 +22,16 @@
         android:textSize="18sp"
         android:textStyle="bold" />
 
+
+    <Button
+        android:id="@+id/btnRemoveRoute"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        android:text="@string/remove_route"
+        android:textColor="@color/white"
+        android:visibility="gone" />
+
 </RelativeLayout>

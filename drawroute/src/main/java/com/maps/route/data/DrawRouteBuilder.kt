@@ -5,6 +5,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Polyline
 import com.google.android.gms.maps.model.PolylineOptions
 import com.maps.route.model.Route
 
@@ -15,6 +16,7 @@ internal class DrawRouteBuilder private constructor(builder: BuildRoute) {
     private val pathColor: Int
     private val bitmapDescriptor: BitmapDescriptor
     private val googleMap: GoogleMap
+    private val polylineList: MutableList<Polyline> = mutableListOf()
 
     companion object {
         private const val DEFAULT_MARKER_ALPHA = 1f
@@ -43,12 +45,25 @@ internal class DrawRouteBuilder private constructor(builder: BuildRoute) {
                             step.startLocation.lng!!
                         )
                     )
-                    polylineOptions.width(pathWidth.toFloat())
-                    polylineOptions.color(pathColor)
-                    googleMap.addPolyline(polylineOptions)
                 }
+                polylineOptions.width(pathWidth.toFloat())
+                polylineOptions.color(getColorWithAlpha(pathColor, alpha))
+                val polyline = googleMap.addPolyline(polylineOptions)
+                polylineList.add(polyline)  // Track the polyline
             }
         }
+    }
+
+    fun removePaths() {
+        for (polyline in polylineList) {
+            polyline.remove()
+        }
+        polylineList.clear()
+    }
+
+    private fun getColorWithAlpha(color: Int, alpha: Float): Int {
+        val alphaValue = (alpha * 255).toInt()
+        return Color.argb(alphaValue, Color.red(color), Color.green(color), Color.blue(color))
     }
 
     class BuildRoute(internal val googleMap: GoogleMap) {
