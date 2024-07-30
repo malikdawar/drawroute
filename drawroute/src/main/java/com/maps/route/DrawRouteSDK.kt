@@ -59,4 +59,10 @@ interface DrawRouteSDK {
         estimates: (Leg) -> Unit,
         error: (Throwable) -> Unit,
     )
+
+    /**
+     * Remove the paths from maps.
+     * @return nothing
+     */
+    fun removePaths()
 }

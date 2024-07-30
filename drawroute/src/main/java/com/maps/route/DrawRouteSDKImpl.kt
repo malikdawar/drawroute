@@ -29,7 +29,10 @@ class DrawRouteSDKImpl(private var gcpApiKey: String) : DrawRouteSDK {
 
     // Coroutine scope for managing coroutines
     private val scope = CoroutineScope(Dispatchers.IO)
+    // instance of RepositoryDrawRoute, creating manually since didn't use any DI framework
     private val repositoryDrawRoute: RepositoryDrawRoute = RepositoryDrawRouteImp()
+    // instance of DrawRouteBuilder, created as nullable since we need it for 2 different methods
+    private var drawRouteBuilder: DrawRouteBuilder? = null
 
     /**
      * Draws a route on the given Google Map from the source location to the destination location.
@@ -67,7 +70,7 @@ class DrawRouteSDKImpl(private var gcpApiKey: String) : DrawRouteSDK {
             }
 
             // Creation of polyline with attributes
-            val drawRouteBuilder = DrawRouteBuilder.BuildRoute(this)
+            drawRouteBuilder = DrawRouteBuilder.BuildRoute(this)
                 .withColor(color)
                 .withWidth(polygonWidth)
                 .withAlpha(0.6f)
@@ -91,7 +94,7 @@ class DrawRouteSDKImpl(private var gcpApiKey: String) : DrawRouteSDK {
                                     routes?.get(0)?.legs?.get(0)?.let {
                                         estimates.invoke(it)
                                     }
-                                    drawRouteBuilder.drawPath(routes!!)
+                                    drawRouteBuilder?.drawPath(routes!!)
                                     // If user requires to bound the markers with padding
                                     if (boundMarkers)
                                         boundMarkersOnMap(arrayListOf(source, destination))
@@ -140,5 +143,13 @@ class DrawRouteSDKImpl(private var gcpApiKey: String) : DrawRouteSDK {
                     }
                 }
         }
+    }
+
+    /**
+     * Remove the paths from maps.
+     * @return nothing
+     */
+    override fun removePaths() {
+        drawRouteBuilder?.removePaths()
     }
 }
