@@ -1,16 +1,15 @@
 package com.maps.route.data
 
-import androidx.annotation.WorkerThread
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.Gson
 import com.maps.route.model.DirectionsResponse
 import com.maps.route.model.TravelMode
 import com.squareup.okhttp.OkHttpClient
 import com.squareup.okhttp.Request
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import java.io.IOException
 import java.util.Locale
